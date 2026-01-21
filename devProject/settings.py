@@ -131,4 +131,4 @@ LOGIN_URL = '/accounts/login/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['https://testproject-g3hi.onrender.com/', '127.0.0.1']
