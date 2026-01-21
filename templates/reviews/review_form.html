@@ -1,0 +1,20 @@
+{% extends 'reviews/base.html' %}
+{% block title %}レビュー{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">
+  {% if edit %}レビュー編集{% else %}レビュー投稿{% endif %}
+</h2>
+
+<div class="card">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">
+        {% if edit %}更新{% else %}投稿{% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

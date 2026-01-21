@@ -1,0 +1,17 @@
+{% extends 'reviews/base.html' %}
+{% block title %}削除確認{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger">
+  <h4>本当に削除しますか？</h4>
+  <p>{{ review.comment }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">削除</button>
+    <a href="{% url 'lecture_detail' review.lecture.id %}" class="btn btn-secondary">
+      キャンセル
+    </a>
+  </form>
+</div>
+{% endblock %}

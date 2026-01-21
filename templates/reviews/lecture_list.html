@@ -1,0 +1,75 @@
+{% extends 'reviews/base.html' %}
+{% block title %}授業一覧{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">授業一覧</h1>
+
+<div class="list-group">
+  {% for lecture in lectures %}
+    <a
+      href="{% url 'lecture_detail' lecture.id %}"
+      class="list-group-item list-group-item-action"
+    >
+      <h5 class="mb-1">{{ lecture.title }}</h5>
+      <p class="mb-1 text-muted">
+        {{ lecture.description|truncatechars:50 }}
+      </p>
+    </a>
+  {% empty %}
+    <p>授業が登録されていません。</p>
+  {% endfor %}
+</div>
+{% endblock %}
+
+<form method="get" class="row g-2 mb-4">
+
+  <div class="col-md-4">
+    <input type="text" name="keyword" class="form-control"
+           placeholder="授業名で検索"
+           value="{{ request.GET.keyword }}">
+  </div>
+
+  <div class="col-md-3">
+    <select name="rating" class="form-select">
+      <option value="">評価で絞り込み</option>
+      {% for i in "12345" %}
+        <option value="{{ i }}"
+          {% if request.GET.rating == i %}selected{% endif %}>
+          ★{{ i }}以上
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <select name="order" class="form-select">
+      <option value="">並び替え</option>
+      <option value="new"
+        {% if request.GET.order == "new" %}selected{% endif %}>
+        新しい順
+      </option>
+      <option value="rating"
+        {% if request.GET.order == "rating" %}selected{% endif %}>
+        評価が高い順
+      </option>
+    </select>
+  </div>
+
+  <div class="col-md-2">
+    <button class="btn btn-primary w-100">検索</button>
+  </div>
+
+</form>
+{% for lecture in lectures %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">
+        <a href="{% url 'lecture_detail' lecture.id %}">
+          {{ lecture.title }}
+        </a>
+      </h5>
+    </div>
+  </div>
+{% empty %}
+  <p>該当する授業がありません。</p>
+{% endfor %}

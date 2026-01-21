@@ -1,0 +1,88 @@
+{% extends 'reviews/base.html' %}
+{% block title %}{{ lecture.title }}{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+  <div class="card-body">
+    <h2 class="card-title">{{ lecture.title }}</h2>
+    <p class="card-text">{{ lecture.description }}</p>
+  </div>
+</div>
+
+<h4>学生のレビュー</h4>
+
+{% for review in reviews %}
+  <div class="card mb-2">
+    <div class="card-body">
+      <h6 class="card-subtitle mb-2 text-muted">
+        {{ review.user }}（{{ review.rating }}点）
+      </h6>
+      <p class="card-text">{{ review.comment }}</p>
+
+      {% if review.user == user %}
+        <a href="{% url 'review_edit' review.id %}" class="btn btn-sm btn-outline-primary">編集</a>
+        <a href="{% url 'review_delete' review.id %}" class="btn btn-sm btn-outline-danger">削除</a>
+      {% endif %}
+    </div>
+  </div>
+{% empty %}
+  <p>まだレビューはありません。</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+  <a href="{% url 'review_create' lecture.id %}" class="btn btn-success mt-3">
+    レビューを書く
+  </a>
+{% else %}
+  <a href="{% url 'login' %}" class="btn btn-secondary mt-3">
+    ログインしてレビューを書く
+  </a>
+{% endif %}
+{% endblock %}
+
+<p>
+  評価：
+  {% for i in "12345" %}
+    {% if forloop.counter <= review.rating %}
+      <span class="text-warning">★</span>
+    {% else %}
+      <span class="text-muted">☆</span>
+    {% endif %}
+  {% endfor %}
+</p>
+
+<form method="post" action="{% url 'lecture_like' lecture.id %}">
+  {% csrf_token %}
+  <button class="btn btn-outline-primary btn-sm">
+    👍 いいね {{ lecture.likes.count }}
+  </button>
+</form>
+
+{% for review in reviews %}
+  <div class="card mb-2">
+    <div class="card-body">
+      <p>{{ review.comment }}</p>
+
+      {% if review.id in liked_review_ids %}
+        <button class="btn btn-secondary btn-sm" disabled>
+          👍 {{ review.likes.count }}
+        </button>
+      {% else %}
+        <form method="post" action="{% url 'review_like' review.id %}">
+          {% csrf_token %}
+          <button class="btn btn-outline-secondary btn-sm">
+            👍 {{ review.likes.count }}
+          </button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+
+<form method="post" action="{% url 'lecture_like' lecture.id %}">
+  {% csrf_token %}
+  <button class="btn btn-sm
+    {% if liked_lecture %}btn-danger{% else %}btn-outline-danger{% endif %}">
+    ❤️ {{ lecture.like_set.count }}
+  </button>
+</form>
